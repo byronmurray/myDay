@@ -16,6 +16,8 @@ Route::get('/', 'ActivityController@index');
 Route::get('/create/', 'ActivityController@create');
 Route::post('/activities', 'ActivityController@store');
 
+Route::post('/update', 'ActivityController@update');
+
 Route::get('/add-to-cart/{id}', 'ActivityController@addToCart');
 Route::get('/remove/{id}', 'ActivityController@getRemovedItem');
 Route::get('/shopping-cart', 'ActivityController@viewCart');

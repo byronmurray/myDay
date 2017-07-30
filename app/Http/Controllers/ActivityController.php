@@ -16,15 +16,15 @@ class ActivityController extends Controller
      */
     public function index()
     {
+        
         $activities = Activity::all();
 
         $oldCart = Session::get('cart');
         $cart = new Cart($oldCart);
 
         $products = $cart->items;
-        $totalPrice = $cart->totalPrice;
 
-        return view('activities.index', compact('activities', 'products', 'totalPrice'));
+        return view('activities.index', compact('activities', 'products', 'cart'));
     }
 
     /**
@@ -48,7 +48,8 @@ class ActivityController extends Controller
         Activity::create([
             'title' => $request->title,
             'body' => $request->body,
-            'price' => $request->price
+            'adultPrice' => $request->adultPrice,
+            'childPrice' => $request->childPrice
         ]);
 
         return redirect('/');
@@ -137,9 +138,37 @@ class ActivityController extends Controller
      * @param  \App\Activity  $activity
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Activity $activity)
+    public function update(Request $request)
     {
-        //
+        // so we are going to have to go throught the cart array and get the number of items and the item ids of each(array)
+        // then loop though each one and update the qty by the number passed.
+        $oldCart = Session::has('cart') ? Session::get('cart') : null;
+        $cart = new Cart($oldCart);
+
+        $cart->totalAdults = $request->adults;
+        $cart->totalChildren = $request->children;
+
+       // return var_dump($cart);
+
+        $products = $cart->items;
+        foreach($products as $items) {
+
+                $id = $items['item']['id'];
+                $activity = Activity::find($id);
+                $cart->update($activity, $activity->id, $request->adults);
+         
+        }
+
+        $request->session()->put('cart', $cart);
+
+
+        
+        
+
+        return redirect('/'); 
+
+
+
     }
 
     /**

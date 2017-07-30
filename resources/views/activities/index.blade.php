@@ -55,9 +55,11 @@
                                 <div>
                                     <h2>{{$activity->title}}</h2>
                                     <p>{{$activity->body}}</p>
-                                    <span>${{$activity->price}}</span>
+                                    <span>Adults: ${{$activity->adultPrice}}</span><br>
+                                    <span>Children: ${{$activity->childPrice}}</span>
                                 </div>
-                                <a href="/add-to-cart/{{$activity->id}}">Add to planner</a>
+                                <br>
+                                <a class="btn btn-success" href="/add-to-cart/{{$activity->id}}">Add to planner</a>
                               </div>
                             @endforeach
                             
@@ -71,6 +73,9 @@
 
                     <section class="text-center">
                         <h2>My Day</h2>
+                        <strong>Total Price: ${{ $cart->totalPrice }}</strong><br>
+                        <strong>Total Adults: {{ $cart->totalAdults }}</strong><br>
+                        <strong>Total Children: {{ $cart->totalChildren }}</strong><br>
                         <div class="flex-container">
                             
                             @if (Session::has('cart'))
@@ -79,9 +84,16 @@
                                 <div class="card">
                                   <div><img src="/images/image_{{ $product['item']['id'] }}.jpg"></div>
                                   <div>
-                                      <strong>{{$product['item']['title']}}</strong>
-                                      <span>${{$product['price']}}</span>
-                                      <span class="badge pull-right">{{ $product['qty'] }}</span>
+                                      <h2><strong>{{$product['item']['title']}}</strong></h2>
+                                      <div>
+                                        <span>Adult Price: ${{$product['item']['adultPrice']}}</span>
+                                        <span class="badge pull-right">{{ $product['qty'] }}</span>
+                                      </div>
+                                      <div>
+                                        <span>Children Price: ${{$product['item']['childPrice']}}</span>
+                                        <span class="badge pull-right">{{ $product['qty'] }}</span>
+                                      </div>
+                                      <span>Total Price of Activity: ${{$product['price']}}</span>
                                   </div>
                                   <a href="/remove/{{$product['item']['id']}}">Remove Item</a>
                                 </div>
@@ -89,28 +101,29 @@
                               @endforeach
                               </div>
                               <hr>
-                              <form>
+                              <form action="/update/" method="POST">
+                                  {{ csrf_field() }}
     
                                   <div class="form-group">
                                     <label>Number of Adults</label>
-                                    <select class="form-control">
-                                      <option>1</option>
-                                      <option>2</option>
-                                      <option>3</option>
-                                      <option>4</option>
-                                      <option>5</option>
+                                    <select class="form-control" name="adults">
+                                      <option {{ $cart->totalAdults == 1 ? 'selected="selected' : '' }}>1</option>
+                                      <option {{ $cart->totalAdults == 2 ? 'selected="selected' : '' }}>2</option>
+                                      <option {{ $cart->totalAdults == 3 ? 'selected="selected' : '' }}>3</option>
+                                      <option {{ $cart->totalAdults == 4 ? 'selected="selected' : '' }}>4</option>
+                                      <option {{ $cart->totalAdults == 5 ? 'selected="selected' : '' }}>5</option> 
                                     </select>
                                   </div>
 
                                   <div class="form-group">
                                     <label>Number of Children</label>
-                                    <select class="form-control">
-                                      <option>0</option>
-                                      <option>1</option>
-                                      <option>2</option>
-                                      <option>3</option>
-                                      <option>4</option>
-                                      <option>5</option>
+                                    <select class="form-control" name="children">
+                                      <option {{ $cart->totalChildren == 0 ? 'selected="selected' : '' }}>0</option>
+                                      <option {{ $cart->totalChildren == 1 ? 'selected="selected' : '' }}>1</option>
+                                      <option {{ $cart->totalChildren == 2 ? 'selected="selected' : '' }}>2</option>
+                                      <option {{ $cart->totalChildren == 3 ? 'selected="selected' : '' }}>3</option>
+                                      <option {{ $cart->totalChildren == 4 ? 'selected="selected' : '' }}>4</option>
+                                      <option {{ $cart->totalChildren == 5 ? 'selected="selected' : '' }}>5</option> 
                                     </select>
                                   </div>
 
@@ -172,7 +185,7 @@
                                   </div>
 
                                   <div>
-                                      <strong>Total Price: ${{ $totalPrice }}</strong><br>
+                                      {{-- <strong>Total Price: ${{ $totalPrice }}</strong><br> --}}
                                   </div>
 
                                   <button type="submit" class="btn btn-default">Submit</button>

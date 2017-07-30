@@ -30,8 +30,13 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="title">Price</label>
-                            <input type="text" name="price" class="form-control">
+                            <label for="title">Adult Price</label>
+                            <input type="text" name="adultPrice" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="title">Child Price</label>
+                            <input type="text" name="childPrice" class="form-control">
                         </div>
 
                         <div class="form-group">
