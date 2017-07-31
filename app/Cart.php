@@ -7,7 +7,7 @@ class Cart
 {
     public $items;
     public $totalQty = 0;
-    public $totalAdults = 0;
+    public $totalAdults = 1;
     public $totalChildren = 0;
     public $totalPrice;
 
@@ -32,29 +32,23 @@ class Cart
     	}
 
     	$storeItem['qty']++;
-    	$storeItem['price'] = $item->price * $storeItem['qty'];
+    	$storeItem['price'] = ($this->totalAdults * $item->adultPrice) + ($this->totalChildren * $item->childPrice);
 
 
     	$this->items[$id] = $storeItem;
     	$this->totalQty++;
-    	$this->totalPrice += $item->price;
+    	$this->totalPrice += ($this->totalAdults * $item->adultPrice) + ($this->totalChildren * $item->childPrice);
     }
 
 
-    public function update($item, $id, $num) {
+    public function update($item, $id) {
 
-        $oldtotal = $this->items[$id]['qty'] * $this->items[$id]['item']['price'];
+        $oldtotal = $this->items[$id]['price'];
+        $newPrice = ($this->totalAdults * $item->adultPrice) + ($this->totalChildren * $item->childPrice);
 
-        $storeItem = ['qty' => 0, 'price' => $item->price, 'item' => $item];
-        if (array_key_exists($id, $this->items)) {
-            $storeItem = $this->items[$id];
-        }
-
-        $storeItem['qty'] = $num;
-        $storeItem['price'] = $item->price * $storeItem['qty'];
-
-        $this->items[$id] = $storeItem;
-        $this->totalPrice += $storeItem['price'] - $oldtotal;
+        $this->items[$id]['price'] = ($this->totalAdults * $item->adultPrice) + ($this->totalChildren * $item->childPrice);
+        //$this->totalPrice += ($this->totalAdults * $item->adultPrice) + ($this->totalChildren * $item->childPrice) - $oldtotal;
+        $this->totalPrice += $newPrice - $oldtotal;
         
     }
 

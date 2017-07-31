@@ -162,7 +162,7 @@ class ActivityController extends Controller
         $request->session()->put('cart', $cart);
 
 
-        
+        //return var_dump($cart);
         
 
         return redirect('/'); 

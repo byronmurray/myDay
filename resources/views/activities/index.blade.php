@@ -73,9 +73,6 @@
 
                     <section class="text-center">
                         <h2>My Day</h2>
-                        <strong>Total Price: ${{ $cart->totalPrice }}</strong><br>
-                        <strong>Total Adults: {{ $cart->totalAdults }}</strong><br>
-                        <strong>Total Children: {{ $cart->totalChildren }}</strong><br>
                         <div class="flex-container">
                             
                             @if (Session::has('cart'))
@@ -86,12 +83,12 @@
                                   <div>
                                       <h2><strong>{{$product['item']['title']}}</strong></h2>
                                       <div>
+                                        <span class="badge">{{ $cart->totalAdults }}</span>
                                         <span>Adult Price: ${{$product['item']['adultPrice']}}</span>
-                                        <span class="badge pull-right">{{ $product['qty'] }}</span>
                                       </div>
                                       <div>
+                                        <span class="badge">{{ $cart->totalChildren }}</span>
                                         <span>Children Price: ${{$product['item']['childPrice']}}</span>
-                                        <span class="badge pull-right">{{ $product['qty'] }}</span>
                                       </div>
                                       <span>Total Price of Activity: ${{$product['price']}}</span>
                                   </div>
@@ -101,7 +98,8 @@
                               @endforeach
                               </div>
                               <hr>
-                              <form action="/update/" method="POST">
+                              <span>total Price ${{ $cart->totalPrice}}</span>
+                              <form action="/update/" method="POST" class="form-inline">
                                   {{ csrf_field() }}
     
                                   <div class="form-group">
@@ -114,7 +112,7 @@
                                       <option {{ $cart->totalAdults == 5 ? 'selected="selected' : '' }}>5</option> 
                                     </select>
                                   </div>
-
+                                  <br>
                                   <div class="form-group">
                                     <label>Number of Children</label>
                                     <select class="form-control" name="children">
@@ -126,7 +124,7 @@
                                       <option {{ $cart->totalChildren == 5 ? 'selected="selected' : '' }}>5</option> 
                                     </select>
                                   </div>
-
+                                  <br>
                                   <button type="submit" class="btn btn-default">Continue</button>
                                 </form>
                                 <hr>
