@@ -124,9 +124,34 @@
                                       <option {{ $cart->totalChildren == 5 ? 'selected="selected' : '' }}>5</option> 
                                     </select>
                                   </div>
+
+                                      
+                                      
+                                      
+
+
+
                                   <br>
-                                  <button type="submit" class="btn btn-default">Continue</button>
+                                  <button type="submit" id="submit" class="btn btn-default">Continue</button>
                                 </form>
+                                
+                                add current location to this
+                                
+                                @foreach ($products as $item)
+                                  @if (count($cart->items) > 1)
+                                    @if ($loop->first)
+                                        <input type="hidden" id="start" value="{{ $item['item']['location'] }}">
+                                        <select multiple id="waypoints" type="hidden">
+                                    @elseif ($loop->last)
+                                        </select>
+                                        <input type="hidden" id="end" value="{{ $item['item']['location'] }}">
+                                    @else
+                                        <option selected='selected' type="hidden" id="waypoints" value="{{ $item['item']['location'] }}"></option>
+                                    @endif
+                                  @endif
+                                    
+
+                                @endforeach
                                 <hr>
 
                             @else
@@ -145,51 +170,60 @@
                    
                    @if (Session::has('cart'))
                        <section>
-                           <iframe src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d12553.457406520587!2d176.239236868668!3d-38.13172007355777!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e6!4m5!1s0x6d6e9d870e2ef5b1%3A0xc26182040f5be75!2sPolynesian+Spa%2C+Rotorua%2C+New+Zealand!3m2!1d-38.1378947!2d176.2582214!4m5!1s0x6d6c27b62116b577%3A0x456085ce2384f5df!2sSkyline+Rotorua+178+Fairy+Springs+Rd%2C+Fairy+Springs%2C+Rotorua+3015%2C+New+Zealand!3m2!1d-38.110431999999996!2d176.221969!5e0!3m2!1sen!2snz!4v1500023313629" width="800" height="600" frameborder="0" style="border:0" allowfullscreen></iframe>
-                       </section>
+                           <style>
+                              #right-panel {
+                                font-family: 'Roboto','sans-serif';
+                                line-height: 30px;
+                                padding-left: 10px;
+                              }
 
-                       <hr>
-                      
-                       <section>
-                            <div class="container">
-                                <form>
-                                  <h3>Personal Information</h3>
-                                  <div class="form-group">
-                                    <label>Name</label>
-                                    <input type="text" class="form-control" placeholder="Name">
-                                  </div>
-                                  <div class="form-group">
-                                    <label>Phone</label>
-                                    <input type="text" class="form-control" placeholder="Phone">
-                                  </div>
-                                  <div class="form-group">
-                                    <label for="exampleInputEmail1">Email address</label>
-                                    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
-                                  </div>
+                              #right-panel select, #right-panel input {
+                                font-size: 15px;
+                              }
 
-                                  <hr>
-                                    <h3>Credit Card Information</h3>
-                                  <div class="form-group">
-                                    <label>Credit Card Name</label>
-                                    <input type="text" class="form-control" placeholder="Name">
-                                  </div>
-                                  <div class="form-group">
-                                    <label>Credit Card Number</label>
-                                    <input type="text" class="form-control" placeholder="xxxx xxxx xxxx">
-                                  </div>
-                                  <div class="form-group">
-                                    <label for="exampleInputEmail1">Expiry Date</label>
-                                    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Date">
-                                  </div>
+                              #right-panel select {
+                                width: 100%;
+                              }
 
-                                  <div>
-                                      {{-- <strong>Total Price: ${{ $totalPrice }}</strong><br> --}}
-                                  </div>
+                              #right-panel i {
+                                font-size: 12px;
+                              }
+                              html, body {
+                                height: 100%;
+                                margin: 0;
+                                padding: 0;
+                              }
+                              #map {
+                                height: 100%;
+                                float: left;
+                                width: 70%;
+                                height: 100%;
+                              }
+                              #right-panel {
+                                margin: 20px;
+                                border-width: 2px;
+                                width: 20%;
+                                height: 400px;
+                                float: left;
+                                text-align: left;
+                                padding-top: 0;
+                              }
+                              #directions-panel {
+                                margin-top: 10px;
+                                background-color: #FFEE77;
+                                padding: 10px;
+                                overflow: scroll;
+                                height: 174px;
+                              }
+                            </style>
 
-                                  <button type="submit" class="btn btn-default">Submit</button>
-                                </form>
+                            <div id="map"></div>
+                            <div id="right-panel">
+                            <div>
+                            <div id="directions-panel"></div>
                             </div>
-                       </section>
+                        </section>
+
                     @endif
 
                 </div>
@@ -197,4 +231,63 @@
         </div>
     </div>
 </div>
+
+
+    <script>
+      function initMap() {
+        var directionsService = new google.maps.DirectionsService;
+        var directionsDisplay = new google.maps.DirectionsRenderer;
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 14,
+          center: {lat: -38.1443828, lng: 176.2629304}
+        });
+        directionsDisplay.setMap(map);
+
+        
+        calculateAndDisplayRoute(directionsService, directionsDisplay);
+
+      }
+
+      function calculateAndDisplayRoute(directionsService, directionsDisplay) {
+        var waypts = [];
+        var checkboxArray = document.getElementById('waypoints');
+        for (var i = 0; i < checkboxArray.length; i++) {
+          if (checkboxArray.options[i].selected) {
+            waypts.push({
+              location: checkboxArray[i].value,
+              stopover: true
+            });
+          }
+        }
+
+        directionsService.route({
+          origin: document.getElementById('start').value,
+          destination: document.getElementById('end').value,
+          waypoints: waypts,
+          optimizeWaypoints: true,
+          travelMode: 'DRIVING'
+        }, function(response, status) {
+          if (status === 'OK') {
+            directionsDisplay.setDirections(response);
+            var route = response.routes[0];
+            var summaryPanel = document.getElementById('directions-panel');
+            summaryPanel.innerHTML = '';
+            // For each route, display summary information.
+            for (var i = 0; i < route.legs.length; i++) {
+              var routeSegment = i + 1;
+              summaryPanel.innerHTML += '<b>Route to Activity: ' + routeSegment +
+                  '</b><br>';
+              summaryPanel.innerHTML += route.legs[i].start_address + ' to ';
+              summaryPanel.innerHTML += route.legs[i].end_address + '<br>';
+              summaryPanel.innerHTML += route.legs[i].distance.text + '<br><br>';
+            }
+          } else {
+            window.alert('Directions request failed due to ' + status);
+          }
+        });
+      }
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDxOOoDq4fJx7ChxpeDb8r6iJLO3iImcSs&callback=initMap">
+    </script>
 @endsection

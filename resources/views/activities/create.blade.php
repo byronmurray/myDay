@@ -30,6 +30,11 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="title">Location</label>
+                            <input type="text" name="location" class="form-control">
+                        </div>
+
+                        <div class="form-group">
                             <label for="title">Adult Price</label>
                             <input type="text" name="adultPrice" class="form-control">
                         </div>

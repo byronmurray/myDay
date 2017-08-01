@@ -22,6 +22,9 @@ Route::get('/add-to-cart/{id}', 'ActivityController@addToCart');
 Route::get('/remove/{id}', 'ActivityController@getRemovedItem');
 Route::get('/shopping-cart', 'ActivityController@viewCart');
 
+Route::get('/map', 'ActivityController@showMap');
+
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');

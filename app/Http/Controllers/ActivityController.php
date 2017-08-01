@@ -48,6 +48,7 @@ class ActivityController extends Controller
         Activity::create([
             'title' => $request->title,
             'body' => $request->body,
+            'location' => $request->location,
             'adultPrice' => $request->adultPrice,
             'childPrice' => $request->childPrice
         ]);
@@ -109,6 +110,18 @@ class ActivityController extends Controller
      * @param  \App\Activity  $activity
      * @return \Illuminate\Http\Response
      */
+    public function showMap(Activity $activity)
+    {
+        return view('map');
+    }
+
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Activity  $activity
+     * @return \Illuminate\Http\Response
+     */
     public function viewCart(Activity $activity)
     {
         if (!Session::has('cart')) {
@@ -148,7 +161,7 @@ class ActivityController extends Controller
         $cart->totalAdults = $request->adults;
         $cart->totalChildren = $request->children;
 
-       // return var_dump($cart);
+        return $request->all();
 
         $products = $cart->items;
         foreach($products as $items) {

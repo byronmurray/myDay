@@ -9,6 +9,7 @@ class Activity extends Model
     protected $fillable = [
         'title',
         'body',
+        'location',
         'adultPrice',
         'childPrice',
     ];

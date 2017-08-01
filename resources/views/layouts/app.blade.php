@@ -12,6 +12,7 @@
 
     <!-- Styles -->
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://developers.google.com/maps/documentation/javascript/demos/demos.css">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
     <style>
@@ -31,6 +32,10 @@
 
         img, iframe, .container {
             max-width: 100%;
+        }
+
+        select#waypoints {
+            display: none;
         }
 
 

@@ -17,6 +17,7 @@ class CreateActivitiesTable extends Migration
             $table->increments('id');
             $table->string('title');
             $table->text('body');
+            $table->string('location');
             $table->integer('adultPrice');
             $table->integer('childPrice');
             $table->timestamps();
